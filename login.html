@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Login Page</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/login_style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <div class="login-container">
+    <h1>Sign In</h1>
+    <p>Welcome back!</p>
+    <form id="Mainform">
+    <div class="social-buttons">
+      <button id="google-sign-in"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">Google</button>
+      <button id="facebook-sign-in"><img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook Logo">Facebook</button>
+    </div>
+    <div class="divider">or Sign Up with</div>
+    <div class="form-group">
+      <input type="email" id="mail" placeholder="Enter your email">
+    </div>
+    <div class="form-group">
+      <div class="password-container">
+          <input type="password" id="password" class="password-input" placeholder="Enter your password">
+          <i id="toggle-icon" class="toggle-icon fas fa-eye"></i>
+      </div>
+  </div>
+    <button class="login-button" type="submit">Sign In</button>
+    <p class="signup-link">Don't have an account? <a href="signup.html">Sign up</a></p>
+  </div>
+</form>
+</body>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+  import { getDatabase, get, ref, child } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+  
+  const firebaseConfig = {
+    apiKey: "AIzaSyBr5OZr2_kJZg1rXJyp5d57e9p3nHtWqok",
+    authDomain: "insurance-96dd6.firebaseapp.com",
+    projectId: "insurance-96dd6",
+    storageBucket: "insurance-96dd6.appspot.com",
+    messagingSenderId: "522283038855",
+    appId: "1:522283038855:web:3be4066bfbe50022e4e022"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase();
+  const auth = getAuth(app);
+  const dbref = ref(db);
+    
+    let Mail = document.getElementById('mail');
+    let Password = document.getElementById('password');
+    let SignInUser = evt =>{
+        evt.preventDefault();
+
+        signInWithEmailAndPassword(auth, Mail.value, Password.value)
+        .then((credentials)=>{
+            get(child(dbref,'UsersAuthList/' + credentials.user.uid))
+              window.location.href = 'user.html';
+            })
+        .catch((error)=>{
+            alert(error.message);
+            console.log(error.code);
+            console.log(error.message);
+        })
+    }
+    Mainform.addEventListener('submit', SignInUser);
+</script>
+<script>
+  const toggleIcon = document.getElementById('toggle-icon');
+      const passwordInput = document.getElementById('password');
+
+      toggleIcon.addEventListener('click', () => {
+          if (passwordInput.type === 'password') {
+              passwordInput.type = 'text';
+              toggleIcon.classList.remove('fa-eye');
+              toggleIcon.classList.add('fa-eye-slash');
+          } else {
+              passwordInput.type = 'password';
+              toggleIcon.classList.remove('fa-eye-slash');
+              toggleIcon.classList.add('fa-eye');
+          }
+      });
+  </script>
+</html>
